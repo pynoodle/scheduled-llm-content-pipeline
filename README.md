@@ -3,6 +3,15 @@
 > **Built:** October 2025
 
 매일 자동으로 AI 뉴스를 수집·요약하고 YouTube Shorts + Instagram 카드뉴스를 생성하여 업로드하는 완전 자동화 콘텐츠 파이프라인입니다.
+> **28개 AI 뉴스 소스 자동 수집 → GPT 요약 → YouTube Shorts + Instagram 카드뉴스 자동 발행**  
+> Multi-format content generation from a single LLM call · GitHub Actions cron scheduling · ~$0.07/day cost-optimized pipeline
+
+![Python](https://img.shields.io/badge/Python-3.11+-blue?logo=python)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4o--mini-412991?logo=openai)
+![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-Automated-2088FF?logo=github-actions)
+![Notion](https://img.shields.io/badge/Notion-API-black?logo=notion)
+![MoviePy](https://img.shields.io/badge/MoviePy-Video_Gen-orange)
+![Pillow](https://img.shields.io/badge/Pillow-Image_Gen-blue)
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
