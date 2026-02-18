@@ -1,191 +1,32 @@
-# 🤖 AI InsightLens
+# 🤖 AI InsightLens — Scheduled LLM Content Pipeline
 
 > **Built:** October 2025
 
-**매일 자동으로 AI 뉴스를 수집, 요약하고 YouTube Shorts + Instagram 카드뉴스를 만들어 업로드하는 완전 자동화 시스템**
+매일 자동으로 AI 뉴스를 수집·요약하고 YouTube Shorts + Instagram 카드뉴스를 생성하여 업로드하는 완전 자동화 콘텐츠 파이프라인입니다.
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## ✨ 주요 기능
+---
 
-### 📰 자동 뉴스 수집 (28개 소스)
-- **AI 연구**: arXiv (cs.AI, cs.LG, cs.CL)
-- **빅테크**: OpenAI, Anthropic, Google DeepMind, Meta AI, NVIDIA, Microsoft
-- **VC/투자**: TechCrunch, VentureBeat, a16z, Y Combinator
-- **주식 전망**: 애널리스트 리포트 및 시장 데이터
+## 1. Overview
 
-### 🧠 AI 요약 생성
-- **GPT-4o-mini** 기반 고품질 요약
-- **영어/한글** 이중 버전
-- **소스별** 개조식 정리
-- **시장 분석** 및 트렌드 인사이트
+AI 뉴스 소비의 파편화 문제를 해결하기 위해, 28개 소스(arXiv, OpenAI, Anthropic, Google DeepMind, Meta AI, TechCrunch 등)에서 뉴스를 자동 수집하고 GPT-4o-mini로 요약한 뒤, YouTube Shorts 영상과 Instagram 카드뉴스를 자동 생성·업로드합니다.
 
-### 📊 Notion 자동 연동
-- 일일 요약 자동 저장
-- 태그 자동 분류
-- 출처 및 시장 데이터 기록
+**핵심 가치:**
+- 매일 아침 8시, 사람 손 없이 AI 뉴스 콘텐츠 완전 자동 생성
+- 단일 요약에서 영상(YouTube) + 이미지(Instagram) + 텍스트(Notion) 3가지 형식 동시 발행
+- 월 $2 이하의 비용으로 운영 가능한 경제적 자동화 시스템
 
-### 🎬 YouTube Shorts 자동 생성
-- **전문적인 디자인**: 그라디언트, 애니메이션, 글로우 효과
-- **바 그래프 주가 차트**: 상승↑/하락↓ 색상 구분
-- **OpenAI TTS**: 자연스러운 음성 나레이션
-- **배경 음악**: 자동 믹싱 (15% 볼륨)
-- **완벽한 동기화**: 화면-음성 타이밍 매칭
+**지원 소스 (28개):**
+- AI 연구: arXiv (cs.AI, cs.LG, cs.CL)
+- 빅테크: OpenAI, Anthropic, Google DeepMind, Meta AI, NVIDIA, Microsoft
+- VC/투자: TechCrunch, VentureBeat, a16z, Y Combinator
+- 주식 데이터: Alpha Vantage / Stooq
 
-### 📸 Instagram/Threads 카드뉴스 생성
-- **자동 이미지 생성**: 요약문에서 핵심 내용 3-5개 추출
-- **1080x1080 정사각형**: Instagram/Threads 최적화
-- **화려한 디자인**: 그라디언트 배경, 슬라이드별 색상 변화
-- **해시태그 자동 추출**: SNS 친화적 해시태그 포함
-- **다국어 지원**: 영어/한글 카드뉴스
+---
 
-### 📤 자동 업로드
-- **YouTube**: OAuth 인증으로 자동 업로드
-- **Instagram**: 간편 자동 업로드 (Instagrapi) ✨ NEW
-  - 5분 설정 / 로컬 파일 직접 업로드
-  - 캐러셀 포스트 자동 생성
-  - 캡션 자동 추가
-- **메타데이터 자동 생성**: 제목, 설명, 태그, 해시태그
-
-## 🚀 빠른 시작
-
-### 1. 설치
-
-```bash
-# 저장소 클론
-git clone https://github.com/pynoodle/AI_InsightLens.git
-cd AI_InsightLens
-
-# 가상환경 생성
-python -m venv .venv
-
-# Windows
-.\.venv\Scripts\Activate.ps1
-
-# macOS/Linux
-source .venv/bin/activate
-
-# 의존성 설치
-pip install -r requirements.txt
-```
-
-### 2. 환경 변수 설정
-
-`.env` 파일 생성:
-
-```env
-# OpenAI API (필수)
-OPENAI_API_KEY=sk-proj-your-key-here
-
-# Notion (필수)
-NOTION_TOKEN=ntn_your-token-here
-NOTION_DB_ID=your-database-id-here
-
-# Instagram 자동 업로드 (선택)
-INSTAGRAM_USERNAME=your_username
-INSTAGRAM_PASSWORD=your_password
-
-# Alpha Vantage (선택 - 시장 데이터 백업)
-ALPHA_VANTAGE_KEY=your-key-here
-
-# Email (선택)
-EMAIL_ENABLE=false
-EMAIL_SMTP_HOST=smtp.gmail.com
-EMAIL_SMTP_PORT=587
-EMAIL_USERNAME=your-email@gmail.com
-EMAIL_PASSWORD=your-app-password
-EMAIL_FROM=your-email@gmail.com
-EMAIL_TO=recipient@gmail.com
-```
-
-### 3. YouTube API 설정 (선택)
-
-YouTube 자동 업로드를 원한다면:
-
-1. [YOUTUBE_AUTOMATION.md](YOUTUBE_AUTOMATION.md) 가이드 참조
-2. Google Cloud Console에서 OAuth credentials 생성
-3. `client_secrets.json` 다운로드 및 저장
-4. 첫 인증 실행:
-
-```bash
-python upload_youtube.py shorts_output/english_short_2025-10-09.mp4 en
-```
-
-### 4. Instagram 자동 업로드 설정 (선택) ✨ NEW
-
-Instagram 자동 업로드를 원한다면 (5분 설정!):
-
-1. Instagrapi 설치:
-```bash
-pip install instagrapi
-```
-
-2. `.env`에 로그인 정보 추가 (위 참조)
-
-3. 테스트 실행:
-```bash
-python upload_instagram_simple.py --test
-```
-
-4. 실제 업로드:
-```bash
-python upload_instagram_simple.py --date 2025-10-09
-```
-
-자세한 내용: [INSTAGRAM_QUICK_START.md](INSTAGRAM_QUICK_START.md)
-
-## 📖 사용법
-
-### 방법 1: 개별 실행
-
-```bash
-# 1. 뉴스 수집 및 요약 생성
-python run_insightlens_ai_only.py
-
-# 2. YouTube Shorts 생성
-python generate_shorts.py summary_2025-10-09.txt
-
-# 3. Instagram 카드뉴스 생성
-python generate_cardnews.py summary_2025-10-09.txt --lang en --slides 5
-
-# 4. YouTube 업로드
-python upload_youtube.py shorts_output/english_short_2025-10-09.mp4 en
-
-# 5. Instagram 업로드 (간편 자동화) ✨ NEW
-python upload_instagram_simple.py --date 2025-10-09
-```
-
-### 방법 2: 전체 파이프라인 실행 (추천!)
-
-```bash
-# 뉴스 수집 → 요약 → 쇼츠 → 카드뉴스 → 업로드 (한 번에!)
-python run_full_pipeline.py
-```
-
-**자동으로 생성되는 콘텐츠:**
-- ✅ Notion에 요약 저장
-- ✅ YouTube Shorts 영상
-- ✅ Instagram 카드뉴스 이미지 (주식정보 포함)
-- ✅ Instagram 캡션 (출처 포함)
-- ✅ YouTube 자동 업로드
-- ✅ Instagram 자동 업로드 (선택) ✨ NEW
-
-### 방법 3: Windows 배치 파일
-
-```bash
-# 더블클릭 실행
-run_daily.bat
-```
-
-### 방법 4: 완전 자동화 (작업 스케줄러)
-
-Windows 작업 스케줄러 설정:
-- [YOUTUBE_AUTOMATION.md](YOUTUBE_AUTOMATION.md) 참조
-- 매일 오전 10시 자동 실행
-- 컴퓨터만 켜져 있으면 자동!
-
-## 🏗️ System Architecture
+## 2. Architecture
 
 ```mermaid
 flowchart TD
@@ -200,76 +41,44 @@ flowchart TD
     J["⏰ Scheduler\n(GitHub Actions cron / Windows Task Scheduler)"] --> A
 ```
 
-## 💰 비용 및 토큰 전략
+**파이프라인 단계:**
+1. **수집**: RSS/arXiv에서 당일 뉴스 피드 fetch
+2. **요약**: GPT-4o-mini로 핵심 포인트 4개 + 시장 분석 생성 (영어/한글)
+3. **저장**: Notion 데이터베이스에 요약 자동 업서트
+4. **영상**: MoviePy + TTS로 YouTube Shorts(~44초) 생성
+5. **이미지**: Pillow로 Instagram 카드뉴스(1080x1080, 5장) 생성
+6. **업로드**: YouTube OAuth + Instagram Instagrapi로 자동 업로드
 
-```
-AI_InsightLens/
-├── run_insightlens_ai_only.py   # 뉴스 수집 및 요약 생성
-├── generate_shorts.py            # YouTube Shorts 생성
-├── generate_cardnews.py          # Instagram 카드뉴스 생성
-├── upload_youtube.py             # YouTube 자동 업로드
-├── upload_instagram.py           # Instagram 업로드 (Graph API)
-├── upload_instagram_simple.py   # Instagram 간편 업로드 ✨ NEW
-├── run_full_pipeline.py          # 전체 파이프라인 통합
-├── run_daily.bat                 # Windows 배치 파일
-├── requirements.txt              # Python 의존성
-├── .env                          # 환경 변수 (생성 필요)
-├── .gitignore                    # Git 제외 파일
-├── README.md                     # 이 파일
-├── YOUTUBE_AUTOMATION.md         # YouTube 자동화 가이드
-├── CARDNEWS_AUTOMATION.md        # 카드뉴스 자동화 가이드
-├── INSTAGRAM_QUICK_START.md     # Instagram 5분 설정 ✨ NEW
-├── INSTAGRAM_AUTOMATION_OPTIONS.md  # Instagram 방법 비교 ✨ NEW
-├── SHORTS_SETUP.md               # 쇼츠 생성 가이드
-├── BACKGROUND_MUSIC.md           # 배경 음악 가이드
-├── shorts_output/                # 생성된 쇼츠 (자동 생성)
-│   ├── english_short_YYYY-MM-DD.mp4
-│   ├── background_music.mp3      # 선택 사항
-│   └── temp_*.png                # 임시 파일 (자동 삭제)
-└── cardnews_output/              # 생성된 카드뉴스 (자동 생성)
-    ├── en_card_00_intro_YYYY-MM-DD.png
-    ├── en_card_01~03_YYYY-MM-DD.png  # 뉴스 카드
-    ├── en_card_04_market_YYYY-MM-DD.png  # 주식정보 ✨ NEW
-    ├── en_card_05_outro_YYYY-MM-DD.png
-    └── en_caption_YYYY-MM-DD.txt  # Instagram 캡션 ✨ NEW
-```
+---
 
-## 🎨 콘텐츠 예시
+## 3. Tech Stack
 
-### YouTube Shorts (44초)
+| 범주 | 기술 |
+|------|------|
+| **LLM** | OpenAI GPT-4o-mini |
+| **TTS** | OpenAI TTS API |
+| **Video Generation** | MoviePy |
+| **Image Generation** | Pillow (PIL) |
+| **News Collection** | feedparser (RSS), arXiv API |
+| **Stock Data** | Alpha Vantage API, Stooq |
+| **Database** | Notion API |
+| **YouTube Upload** | YouTube Data API v3 (OAuth) |
+| **Instagram Upload** | Instagrapi |
+| **Scheduler** | GitHub Actions (cron), Windows Task Scheduler |
+| **Language** | Python 3.11+ |
 
-1. **인트로** (2초) - 날짜 및 제목
-2. **핵심 포인트 4개** (27초) - 주요 뉴스
-3. **주가 차트** (11초) - 바 그래프 시각화
-4. **아웃트로** (2초) - 구독 유도
+---
 
-**디자인 특징:**
-- 🎨 그라디언트 배경
-- ✨ 페이드 인/아웃 애니메이션
-- 💫 글로우 효과
-- 📊 색상 구분 (상승↑ 초록, 하락↓ 빨강)
-- 🎵 배경 음악 (15% 볼륨)
-
-### Instagram 카드뉴스 (5장)
-
-1. **인트로** - "AI NEWS TODAY" + 날짜
-2. **뉴스 1-3** - 제목 + 내용 + 출처
-3. **아웃트로** - "FOLLOW FOR MORE" + 해시태그
-
-**디자인 특징:**
-- 📱 1080x1080 정사각형
-- 🎨 슬라이드별 다른 그라디언트
-- ✨ 글로우 효과 & 그림자
-- 📊 깔끔한 타이포그래피
-- #️⃣ 자동 해시태그
-
-## 💰 비용 및 토큰 전략
+## 4. Core Logic
 
 ### Token Cost Strategy
-- **Batched summarization**: 수집된 기사를 단일 프롬프트로 묶어 API 호출 최소화
-- **Context window trimming**: 기사별 최대 토큰 수 제한으로 비용 제어
-- **Model selection**: `gpt-4o-mini` 선택 — gpt-4o 대비 ~10x 저렴, 요약 품질 충분
-- **Estimated daily cost**: ~$0.07/일 (아래 상세 내역 기준)
+
+```
+- Batched summarization: 수집된 기사를 단일 프롬프트로 묶어 API 호출 최소화
+- Context window trimming: 기사별 최대 토큰 수 제한으로 비용 제어
+- Model selection: gpt-4o-mini 선택 — gpt-4o 대비 ~10x 저렴, 요약 품질 충분
+- Estimated daily cost: ~$0.07/일
+```
 
 ### 일일 운영 비용 (약 $0.07/일)
 
@@ -279,184 +88,171 @@ AI_InsightLens/
 | OpenAI TTS (5개 섹션) | ~$0.04 |
 | OpenAI GPT-4o-mini (카드뉴스 추출) | ~$0.01 |
 | PIL 이미지 생성 | 무료 |
-| **합계** | **~$0.07/일** |
+| **합계** | **~$0.07/일 (월 $2 이하)** |
 
-**월 비용: $2 이하!**
-
-### 무료 항목
-- ✅ YouTube API (일일 할당량 내)
-- ✅ Instagram Graph API (무료)
-- ✅ Notion API
-- ✅ RSS/arXiv 수집
-- ✅ Alpha Vantage (무료 플랜)
-- ✅ PIL/Pillow (이미지 생성)
-
-## 🔧 고급 설정
-
-### 배경 음악 추가
-
-1. 무료 음원 다운로드:
-   - [Pixabay Music](https://pixabay.com/music/)
-   - [YouTube Audio Library](https://studio.youtube.com/channel/audio_library)
-
-2. 저장:
-   ```
-   shorts_output/background_music.mp3
-   ```
-
-3. 자동으로 15% 볼륨으로 믹싱됨!
-
-### RSS 소스 커스터마이징
-
-`run_insightlens_ai_only.py`에서 `RSS_SOURCES` 수정:
-
-```python
-RSS_SOURCES = [
-    "https://blog.openai.com/rss/",  # 추가/삭제 가능
-    # ... 더 많은 소스
-]
-```
-
-### 쇼츠 디자인 변경
-
-`generate_shorts.py`에서:
-- `create_text_image()`: 색상, 폰트 크기
-- `create_market_image_pro()`: 바 그래프 스타일
-- 배경색, 애니메이션 효과 등
-
-### 카드뉴스 디자인 변경
-
-`generate_cardnews.py`에서:
-- `colors`: 슬라이드별 그라디언트 색상
-- `create_intro_card()`: 인트로 디자인
-- `create_content_card()`: 본문 카드 레이아웃
-- 폰트 크기, 텍스트 래핑 등
-
-자세한 내용은 [CARDNEWS_AUTOMATION.md](CARDNEWS_AUTOMATION.md) 참조
-
-## 🌟 GitHub Actions 완전 자동화 ✨ NEW
-
-**매일 아침 8시 자동 실행** (3단계 순차):
-
-- **8:00** - 뉴스 수집 & 요약 생성
-- **8:10** - YouTube Shorts 생성
-- **8:15** - Instagram 카드뉴스 + 자동 업로드
-
-**설정 방법**: [GITHUB_AUTOMATION_GUIDE.md](GITHUB_AUTOMATION_GUIDE.md) 참조
-
-**장점**:
-- ✅ 컴퓨터 꺼져 있어도 자동 실행
-- ✅ Instagram 자동 게시
-- ✅ 모든 파일 GitHub Artifacts 백업
-- ⚠️ YouTube만 수동 업로드 (1분 소요)
-
-## 🔒 Production Considerations
-
-실제 운영 환경을 고려한 설계 원칙 및 개선 방향:
-
-| 항목 | 내용 |
-|------|------|
-| **API Failure Handling** | Retry logic with exponential backoff (OpenAI / Notion API 호출 실패 대응) |
-| **Rate Limit Handling** | API별 호출 간격 조절 및 429 응답 시 대기 처리 |
-| **Logging & Monitoring** | 파이프라인 단계별 성공/실패 로그 기록 |
-| **Token Usage Tracking** | 일별 API 사용량 추적 및 비용 이상 감지 |
-| **Duplicate Prevention** | 날짜 기반 파일명으로 중복 생성 방지, Notion 업서트 처리 |
-| **Credential Management** | `.env` 기반 시크릿 관리, GitHub Actions Secrets 연동 |
-
-## 🛠️ 문제 해결
-
-### "OpenAI API Error"
+### 콘텐츠 생성 파이프라인
 
 ```bash
-# .env 파일 확인
-cat .env | grep OPENAI_API_KEY
+# 방법 1: 개별 단계 실행
+python run_insightlens_ai_only.py      # 뉴스 수집 + 요약 생성
+python generate_shorts.py summary_*.txt  # YouTube Shorts 생성
+python generate_cardnews.py summary_*.txt --lang en --slides 5  # 카드뉴스 생성
+python upload_youtube.py shorts_output/*.mp4 en   # YouTube 업로드
+python upload_instagram_simple.py --date 2025-10-09  # Instagram 업로드
 
-# 키가 유효한지 테스트
-python -c "from openai import OpenAI; print(OpenAI().models.list())"
+# 방법 2: 전체 파이프라인 한 번에
+python run_full_pipeline.py
 ```
 
-### "Notion 404 Not Found"
+### GitHub Actions 자동화
 
-```bash
-# 데이터베이스 ID 확인
-# Notion 페이지 URL에서: 
-# https://www.notion.so/{DATABASE_ID}?v=...
+매일 아침 8시 순차 3단계 실행:
+- **8:00** — 뉴스 수집 & 요약 생성
+- **8:10** — YouTube Shorts 생성
+- **8:15** — Instagram 카드뉴스 + 자동 업로드
 
-# Integration이 데이터베이스에 공유되었는지 확인
+```yaml
+# .github/workflows/daily_pipeline.yml
+on:
+  schedule:
+    - cron: '0 23 * * *'  # UTC 23:00 = KST 08:00
 ```
-
-### "YouTube upload failed"
-
-```bash
-# 재인증
-del token.pickle
-python upload_youtube.py shorts_output/english_short_2025-10-09.mp4 en
-
-# client_secrets.json 확인
-dir client_secrets.json
-```
-
-### "ffmpeg not found"
-
-Windows:
-```bash
-# Chocolatey 사용
-choco install ffmpeg
-
-# 또는 수동 설치
-# https://www.gyan.dev/ffmpeg/builds/
-```
-
-macOS:
-```bash
-brew install ffmpeg
-```
-
-Linux:
-```bash
-sudo apt-get install ffmpeg
-```
-
-## 📚 참고 문서
-
-- [YOUTUBE_AUTOMATION.md](YOUTUBE_AUTOMATION.md) - YouTube 자동화 완전 가이드
-- [CARDNEWS_AUTOMATION.md](CARDNEWS_AUTOMATION.md) - 카드뉴스 자동화 가이드
-- **[INSTAGRAM_QUICK_START.md](INSTAGRAM_QUICK_START.md) - Instagram 5분 설정 가이드** ✨ NEW
-- [INSTAGRAM_AUTOMATION_OPTIONS.md](INSTAGRAM_AUTOMATION_OPTIONS.md) - Instagram 자동화 방법 비교
-- [SHORTS_SETUP.md](SHORTS_SETUP.md) - 쇼츠 생성 상세 가이드
-- [BACKGROUND_MUSIC.md](BACKGROUND_MUSIC.md) - 배경 음악 추가 방법
-
-## 🤝 기여
-
-이슈 및 PR 환영합니다!
-
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 라이선스
-
-MIT License - 자유롭게 사용하세요!
-
-## 🙏 감사
-
-- OpenAI (GPT-4, TTS)
-- Notion API
-- YouTube Data API v3
-- MoviePy
-- Pillow (PIL)
-- feedparser
-
-## 📧 연락처
-
-문의: GitHub Issues를 통해 문의해 주세요
-
-GitHub: [@pynoodle](https://github.com/pynoodle)
 
 ---
 
-**⭐ 이 프로젝트가 유용하다면 Star를 눌러주세요!**
+## 5. Evaluation
 
-Made with ❤️ by AI & Automation
+| 항목 | 내용 |
+|------|------|
+| **Pipeline Completion Rate** | 각 단계(수집→요약→영상→이미지→업로드) 성공률; 날짜별 로그로 실패 단계 추적 |
+| **Summary Quality** | 핵심 포인트 4개가 실제 뉴스 내용을 대표하는지 — 소스 링크와 요약 내용 대조 |
+| **Content Consistency** | 영어/한글 버전 간 내용 일치도; 메타데이터(제목, 태그, 해시태그) 자동 생성 품질 |
+| **Upload Success Rate** | YouTube OAuth 토큰 만료, Instagram 세션 오류 등 업로드 실패 비율 |
+| **Cost Tracking** | 일별 OpenAI API 사용량(토큰 수) 추적으로 비용 이상 조기 감지 |
+| **Future Improvements** | 사용자 참여율(조회수, 좋아요) 기반 콘텐츠 품질 피드백, 소스별 뉴스 신뢰도 점수 도입 |
+
+---
+
+## 6. Production Considerations
+
+| 항목 | 내용 |
+|------|------|
+| **API Failure Handling** | OpenAI / Notion API 호출 실패 시 단계별 에러 로깅으로 실패 지점 특정 |
+| **Rate Limit Handling** | API별 호출 간격 조절 및 429 응답 시 대기 처리 |
+| **Duplicate Prevention** | 날짜 기반 파일명(`summary_YYYY-MM-DD.txt`)으로 중복 생성 방지, Notion 업서트 처리 |
+| **Credential Management** | `.env` 기반 시크릿 관리 (OpenAI, Notion, Instagram, Gmail); GitHub Actions Secrets 연동 |
+| **Large File Management** | 영상(.mp4), 이미지(.png), 오디오(.mp3) 파일은 `.gitignore`로 제외 — 저장소 비대화 방지 |
+| **YouTube OAuth** | `token.pickle`은 git 제외; 만료 시 재인증 필요 — 완전 무인 자동화의 제약 사항 |
+| **Instagram Session** | Instagrapi `instagram_session.json`은 git 제외; 세션 만료 시 재로그인 필요 |
+
+---
+
+## 7. Deployment
+
+### 로컬 실행
+
+```bash
+# 1. 저장소 클론
+git clone https://github.com/pynoodle/scheduled-llm-content-pipeline.git
+cd scheduled-llm-content-pipeline
+
+# 2. 가상환경 생성
+python -m venv .venv
+# Windows
+.\.venv\Scripts\Activate.ps1
+# macOS/Linux
+source .venv/bin/activate
+
+# 3. 의존성 설치
+pip install -r requirements.txt
+
+# 4. 환경 변수 설정
+cp .env.example .env
+# .env 파일에 API 키 입력
+
+# 5. 전체 파이프라인 실행
+python run_full_pipeline.py
+```
+
+### 환경 변수 (.env)
+
+```env
+# 필수
+OPENAI_API_KEY=sk-proj-your-key-here
+NOTION_TOKEN=ntn_your-token-here
+NOTION_DB_ID=your-database-id-here
+
+# 선택
+INSTAGRAM_USERNAME=your_username
+INSTAGRAM_PASSWORD=your_password
+ALPHA_VANTAGE_KEY=your-key-here
+EMAIL_ENABLE=false
+EMAIL_SMTP_HOST=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+EMAIL_USERNAME=your-email@gmail.com
+EMAIL_PASSWORD=your-app-password
+EMAIL_FROM=your-email@gmail.com
+EMAIL_TO=recipient@gmail.com
+```
+
+### GitHub Actions 자동화
+
+[GITHUB_AUTOMATION_GUIDE.md](GITHUB_AUTOMATION_GUIDE.md) 참조:
+1. GitHub Secrets에 API 키 등록
+2. `.github/workflows/` 워크플로우 활성화
+3. 매일 KST 8시 자동 실행 — 컴퓨터 꺼져 있어도 동작
+
+### Windows 작업 스케줄러
+
+```bash
+# 더블클릭 실행
+run_daily.bat
+```
+
+### 프로젝트 구조
+
+```
+scheduled-llm-content-pipeline/
+├── run_insightlens_ai_only.py    # 뉴스 수집 및 요약 생성
+├── generate_shorts.py             # YouTube Shorts 생성
+├── generate_cardnews.py           # Instagram 카드뉴스 생성
+├── upload_youtube.py              # YouTube 자동 업로드
+├── upload_instagram_simple.py    # Instagram 간편 업로드
+├── run_full_pipeline.py           # 전체 파이프라인 통합
+├── run_daily.bat                  # Windows 배치 파일
+├── .github/workflows/             # GitHub Actions 워크플로우
+├── requirements.txt
+├── .env.example
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 8. Lessons Learned
+
+**단일 요약 → 멀티 포맷 발행 설계**
+- 하나의 GPT 요약 결과에서 영상·이미지·텍스트를 모두 생성하면 API 비용을 획기적으로 줄일 수 있음
+- 포맷별로 별도 LLM 호출을 하면 비용이 3배로 증가 — 공통 요약을 중심으로 설계해야 함
+
+**GitHub Actions vs 로컬 스케줄러**
+- GitHub Actions: 서버 없이 무료 자동화 가능, but YouTube OAuth 토큰 관리가 복잡 (pickle 파일을 Secret으로 인코딩 필요)
+- Windows Task Scheduler: 설정이 간단하나 PC가 켜져 있어야 함 — 두 방법의 장단점을 이해하고 목적에 맞게 선택
+
+**Instagram 자동화의 현실적 제약**
+- Instagram Graph API(공식)는 비즈니스 계정 + Facebook 연동 필수 — 설정 복잡도가 높음
+- Instagrapi(비공식 역공학)는 설정이 5분이나, Instagram 정책 변경 시 동작 중단 위험 — 프로덕션에서는 공식 API 권장
+
+**RSS 소스 신뢰도 관리**
+- 28개 소스 중 일부는 비정기 업데이트 또는 피드 구조 변경이 잦음 — 소스별 fallback 처리 필수
+- arXiv는 하루 수백 건 논문이 올라와 필터링 없이 수집하면 요약 품질이 저하됨 — 관련 카테고리(cs.AI, cs.LG, cs.CL)만 선택적 수집
+
+**비용 통제가 자동화 시스템의 핵심**
+- GPT-4o 대신 GPT-4o-mini를 선택하면 품질 손실 없이 비용을 ~10배 절감
+- TTS는 텍스트 길이에 비례해 비용이 증가 — 섹션 수(5개)와 섹션당 길이를 명확히 제한해야 함
+
+---
+
+**📞 프로젝트 링크:** [https://github.com/pynoodle/scheduled-llm-content-pipeline](https://github.com/pynoodle/scheduled-llm-content-pipeline)
+
+GitHub: [@pynoodle](https://github.com/pynoodle)
