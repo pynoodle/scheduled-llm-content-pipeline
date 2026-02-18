@@ -1,0 +1,71 @@
+name: 2. YouTube Shorts (8:10 AM) - DISABLED (Using Local Generation)
+
+on:
+  # schedule:
+  #   # 매일 오전 8시 10분 (KST) = UTC 전날 23시 10분
+  #   - cron: '10 23 * * *'
+  workflow_dispatch:  # 수동 실행은 가능
+
+env:
+  TZ: 'Asia/Seoul'
+
+jobs:
+  generate-shorts:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # 최신 커밋 가져오기
+    
+    - name: Pull latest changes
+      run: |
+        git pull origin main
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        # FFmpeg 설치 (영상 생성용)
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+    
+    - name: Create .env file
+      run: |
+        cat > .env << EOF
+        OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}
+        EOF
+    
+    - name: Generate YouTube Shorts
+      run: |
+        echo "=== [8:10 AM] Generating YouTube Shorts ==="
+        DATE=$(date +%Y-%m-%d)
+        
+        if [ ! -f "summary_${DATE}.txt" ]; then
+          echo "Summary file not found. Downloading from artifacts..."
+          # 이전 워크플로우에서 생성된 파일 사용
+        fi
+        
+        python generate_shorts.py "summary_${DATE}.txt"
+    
+    - name: Upload shorts video
+      uses: actions/upload-artifact@v4
+      with:
+        name: youtube-shorts
+        path: |
+          shorts_output/*.mp4
+          shorts_output/*.mp3
+        retention-days: 7
+

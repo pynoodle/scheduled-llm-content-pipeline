@@ -1,0 +1,90 @@
+name: Daily AI InsightLens (Full Pipeline)
+
+on:
+  schedule:
+    # 매일 한국 시간 오전 8시 (UTC 23:00 전날)
+    - cron: '0 23 * * *'
+  workflow_dispatch:  # 수동 실행도 가능
+
+jobs:
+  run-insightlens:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+    
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    
+    - name: Install system dependencies (ffmpeg)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y ffmpeg
+    
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run AI InsightLens (News + Summary + Notion)
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        NOTION_DB_ID: ${{ secrets.NOTION_DB_ID }}
+        ALPHA_VANTAGE_KEY: ${{ secrets.ALPHA_VANTAGE_KEY }}
+        EMAIL_ENABLE: ${{ secrets.EMAIL_ENABLE }}
+        EMAIL_SMTP_HOST: ${{ secrets.EMAIL_SMTP_HOST }}
+        EMAIL_SMTP_PORT: ${{ secrets.EMAIL_SMTP_PORT }}
+        EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+        EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
+        EMAIL_TO: ${{ secrets.EMAIL_TO }}
+      run: |
+        python run_insightlens_ai_only.py
+    
+    - name: Generate YouTube Shorts
+      env:
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      run: |
+        SUMMARY_FILE=$(ls summary_*.txt | head -n 1)
+        if [ -f "$SUMMARY_FILE" ]; then
+          echo "Generating shorts from $SUMMARY_FILE"
+          python generate_shorts.py "$SUMMARY_FILE"
+        else
+          echo "No summary file found!"
+          exit 1
+        fi
+    
+    - name: Upload Shorts as Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: daily-shorts
+        path: |
+          shorts_output/*.mp4
+          summary_*.txt
+        retention-days: 7
+    
+    - name: Commit summary file
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add summary_*.txt sources_*.json || true
+        git commit -m "Add daily summary $(date +'%Y-%m-%d')" || echo "No changes to commit"
+        git push || echo "Nothing to push"
+    
+    - name: Notify on failure
+      if: failure()
+      run: |
+        echo "❌ AI InsightLens daily run failed!"
+
