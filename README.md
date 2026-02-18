@@ -185,7 +185,22 @@ Windows 작업 스케줄러 설정:
 - 매일 오전 10시 자동 실행
 - 컴퓨터만 켜져 있으면 자동!
 
-## 📁 프로젝트 구조
+## 🏗️ System Architecture
+
+```mermaid
+flowchart TD
+    A["📡 RSS Fetcher\n(28 sources + arXiv)"] --> C
+    B["📈 Stock Data API\n(Alpha Vantage / Stooq)"] --> C
+    C["🧠 LLM Summarizer\n(GPT-4o-mini)"] --> D["📝 Content Synthesizer\n(EN + KR)"]
+    D --> E["🗄️ Notion Uploader"]
+    D --> F["📸 Instagram Card Generator\n(Pillow 1080x1080)"]
+    D --> G["🎬 YouTube Shorts Generator\n(MoviePy + TTS)"]
+    F --> H["📤 Instagram Auto-upload\n(Instagrapi)"]
+    G --> I["📤 YouTube Auto-upload\n(OAuth)"]
+    J["⏰ Scheduler\n(GitHub Actions cron / Windows Task Scheduler)"] --> A
+```
+
+## 💰 비용 및 토큰 전략
 
 ```
 AI_InsightLens/
@@ -248,9 +263,15 @@ AI_InsightLens/
 - 📊 깔끔한 타이포그래피
 - #️⃣ 자동 해시태그
 
-## 💰 비용
+## 💰 비용 및 토큰 전략
 
-### 일일 운영 비용 (약 $0.08/일)
+### Token Cost Strategy
+- **Batched summarization**: 수집된 기사를 단일 프롬프트로 묶어 API 호출 최소화
+- **Context window trimming**: 기사별 최대 토큰 수 제한으로 비용 제어
+- **Model selection**: `gpt-4o-mini` 선택 — gpt-4o 대비 ~10x 저렴, 요약 품질 충분
+- **Estimated daily cost**: ~$0.07/일 (아래 상세 내역 기준)
+
+### 일일 운영 비용 (약 $0.07/일)
 
 | 항목 | 비용 |
 |------|------|
@@ -328,6 +349,19 @@ RSS_SOURCES = [
 - ✅ Instagram 자동 게시
 - ✅ 모든 파일 GitHub Artifacts 백업
 - ⚠️ YouTube만 수동 업로드 (1분 소요)
+
+## 🔒 Production Considerations
+
+실제 운영 환경을 고려한 설계 원칙 및 개선 방향:
+
+| 항목 | 내용 |
+|------|------|
+| **API Failure Handling** | Retry logic with exponential backoff (OpenAI / Notion API 호출 실패 대응) |
+| **Rate Limit Handling** | API별 호출 간격 조절 및 429 응답 시 대기 처리 |
+| **Logging & Monitoring** | 파이프라인 단계별 성공/실패 로그 기록 |
+| **Token Usage Tracking** | 일별 API 사용량 추적 및 비용 이상 감지 |
+| **Duplicate Prevention** | 날짜 기반 파일명으로 중복 생성 방지, Notion 업서트 처리 |
+| **Credential Management** | `.env` 기반 시크릿 관리, GitHub Actions Secrets 연동 |
 
 ## 🛠️ 문제 해결
 
