@@ -1,5 +1,7 @@
 # 🤖 AI InsightLens
 
+> **Built:** October 2025
+
 **매일 자동으로 AI 뉴스를 수집, 요약하고 YouTube Shorts + Instagram 카드뉴스를 만들어 업로드하는 완전 자동화 시스템**
 
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
